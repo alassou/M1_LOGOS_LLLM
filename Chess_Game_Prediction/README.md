@@ -9,7 +9,7 @@ This repository hosts two distinct projects that leverage large language models 
 This project focuses on developing an application that uses a large language model to predict the next move in a chess game. The model is trained to understand and analyze chess positions, offering insights into potential future moves based on the current state of the game.
 
 ### How It Works
-- The LLM is trained on a dataset of historical chess games.
+- The LLM is trained on a dataset of generated chess games (by stockfish playing against himself).
 - It analyzes the board's current state and predicts the most likely next move.
 - This can be used to assist players in training or to enhance chess-related software.
 
