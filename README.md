@@ -1,37 +1,96 @@
+# Platonic Representation of a Tic-tac-toe World
 
-# LLM Applications Repository
+[![Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1lIp2npuGWM4JiuvWlCtbm6ENpf22WAbH?usp=sharing)
 
-This repository hosts two distinct projects that leverage large language models (LLMs) in different domains: chess game prediction and generative imaging.
+![Accuracy Across Layers](assets/txt_probe.png)
 
-## Project 1: LLM for Chess Game Prediction
+## Introduction
 
-### Overview
-This project focuses on developing an application that uses a large language model to predict the next move in a chess game. The model is trained to understand and analyze chess positions, offering insights into potential future moves based on the current state of the game.
+This project draws inspiration from the June 2024 article by Philip Isola and his students: [Platonic Representation Hypothesis](https://phillipi.github.io/prh/). The central idea is that models trained on different data types (image, audio, text) converge towards the same representation in latent space.
 
-### How It Works
-- The LLM is trained on a dataset of historical chess games.
-- It analyzes the board's current state and predicts the most likely next move.
-- This can be used to assist players in training or to enhance chess-related software.
+The code for training the transformers is based on the work of Andrej Karpathy (nanoGPT): [GitHub nanoGPT](https://github.com/karpathy).
 
-### Objectives
-- To train an LLM that can accurately predict chess moves.
-- To integrate this model into a user-friendly chess training application.
+In this project, we test this hypothesis on a very simple world: Tic-tac-toe. We train two transformers with the same architecture and number of parameters on:
+1. PNG images of games
+2. Games in standard textual notation (see [Wikipedia: Tic-tac-toe](https://en.wikipedia.org/wiki/Tic-tac-toe))
 
-## Project 2: Generative Imaging Using LLM
+## Quick Start
 
-### Overview
-The second project explores the capability of large language models to generate images based on textual descriptions. This application of LLMs demonstrates their potential beyond text processing, extending into creative visual arts.
+### Installing Dependencies
 
-### How It Works
-- Users provide textual descriptions of images they wish to create.
-- The LLM interprets these descriptions and generates corresponding images.
+```bash
+pip install torch numpy transformers datasets tiktoken wandb tqdm
+```
 
-### Objectives
-- To develop a tool that can create visual content from textual prompts.
-- To explore and expand the boundaries of creative AI applications.
+## Text-games
 
-## Contributing
-We welcome contributions to both projects. If you're interested in improving the models, adding features, or fixing bugs, please feel free to fork the repository and submit a pull request.
+Example of a tic-tac-toe game: ```;X21 O23 X22 O31 X33 O32 X11``` 
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+You can generate all the possible text-games with:
+
+```bash
+python txt_game_generator.py
+```
+
+### Training the Text-Based Transformer
+
+```bash
+cd platonic_representation
+python data/txt/prepare_txt.py
+python train.py config/train_txt.py
+```
+
+### Sampling for the Text Model
+
+```bash
+python sample.py --out_dir=out-txt-models
+```
+
+## Image-games
+
+The images are 9x9 png files, which contains one game each. The state of the square are denoted by gray-scale :
+
+![A image game](assets/explain.png)
+
+You can generate img-games (based on text-games) with:
+
+```bash
+python img_game_generator.py
+```
+
+### Training the Image-Based Transformer
+
+```bash
+cd platonic_representation
+python img_game_generator.py
+python data/img/prepare_img.py
+python train.py config/train_img.py
+```
+
+### Sampling for the Image Model
+
+```bash
+python sample.py --out_dir=out-img-models
+```
+
+### Probing layer by layer for txt
+
+To run the linear probes layer by layer (see graphs in /assets), you can run:
+
+```bash
+python probing_txt.py
+```
+
+### Probing layer by layer for img
+
+```bash
+python probing_img.py
+```
+
+### Various metrics for PRH (see Isola et al. 2024)
+
+```bash
+python prh.py
+```
+
+This project is currently under development. Should you have any questions, please don't hesitate to contact me!
